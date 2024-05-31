@@ -1,0 +1,92 @@
+---
+title: Efficient non-Markovian epidemic simulation on large bipartite networks
+authors:
+  - name: David Wu
+    affiliation: Department of Econometrics and Business Statistics, Monash University
+    roles: writing
+    corresponding: true
+  - name: Frankie Patten-Elliott
+    affiliation: School of Mathematical Sciences, University of Nottingham
+  - name: Oliver J. Maclaren
+    affiliation: Department of Engineering Science, University of Auckland
+draft: true
+bibliography: references.bib
+---
+
+## Introduction
+
+### Why this is unique/interesting {.tohide}
+
+- The simulation of epidemics has been instrumental in defining policy at various levels, from healthcare unit to government. 
+- Much success can be had with models that approximate individual behaviours using approaches like mass-action.
+- However, the individual interaction can be important in periods where the assumptions of the approximations cannot hold.
+- To structure the interactions between individuals, there are many approaches [missing info], but a standard model is to use a network, or graph, to define the possible interactions between individuals.
+- To realistically represent modes of interaction in a memory-efficient manner, we choose to use bipartite networks, where, as usual, individuals are represented as nodes, in one of the disjoint sets; and the contexts of interaction are now also explicitly nodes, and are the other disjoint set; i.e. individuals are connected to other individuals through interaction context nodes. 
+
+### Problem Setup {.tohide}
+
+- We have a multi-layered bipartite network, where each layer is defined by the class of interaction contexts.
+- This bipartite network is large, with over X million nodes, and created with [data sources]
+- We wanted to construct relatively complex agent-like logic, without explicitly looping over each agent, especially when they are not important to the infectious disease process.
+
+## Method
+
+### Motivation for grouping and structuring a reaction tree {.tohide}
+
+When the reactions are enumerated, many reactions are 
+
+### Non-Markovian Extensions
+
+To build in more complex interactions, 
+
+### Algorithm and principles
+
+```pseudocode
+#| label: alg-quicksort
+#| html-indent-size: "1.2em"
+#| html-comment-delimiter: "//"
+#| html-line-number: true
+#| html-line-number-punc: ":"
+#| html-no-end: false
+#| pdf-placement: "htb!"
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{Quicksort}
+\begin{algorithmic}
+\Procedure{Quicksort}{$A, p, r$}
+  \If{$p < r$}
+    \State $q = $ \Call{Partition}{$A, p, r$}
+    \State \Call{Quicksort}{$A, p, q - 1$}
+    \State \Call{Quicksort}{$A, q + 1, r$}
+  \EndIf
+\EndProcedure
+\Procedure{Partition}{$A, p, r$}
+  \State $x = A[r]$
+  \State $i = p - 1$
+  \For{$j = p, \dots, r - 1$}
+    \If{$A[j] < x$}
+      \State $i = i + 1$
+      \State exchange
+      $A[i]$ with     $A[j]$
+    \EndIf
+    \State exchange $A[i]$ with $A[r]$
+  \EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+```
+
+
+## Results
+
+Here, we show 
+
+
+## Discussion
+
+
+
+
+##
+This is a simple placeholder for the manuscript's main document [@knuth84].
