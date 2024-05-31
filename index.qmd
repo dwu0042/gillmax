@@ -15,6 +15,14 @@ bibliography: references.bib
 
 ## Introduction
 
+### Notes from initial meeting {.tohide}
+
+- We want to implement a simple toy model
+  - we want demography, e.g. age, for individuals
+  - we want to have some categorisation for the context ndoes (bipartite nature is probably important)
+  - we need a process with non-markovian waiting time
+  - want a competing process
+
 ### Why this is unique/interesting {.tohide}
 
 - The simulation of epidemics has been instrumental in defining policy at various levels, from healthcare unit to government. 
@@ -23,13 +31,20 @@ bibliography: references.bib
 - To structure the interactions between individuals, there are many approaches [missing info], but a standard model is to use a network, or graph, to define the possible interactions between individuals.
 - To realistically represent modes of interaction in a memory-efficient manner, we choose to use bipartite networks, where, as usual, individuals are represented as nodes, in one of the disjoint sets; and the contexts of interaction are now also explicitly nodes, and are the other disjoint set; i.e. individuals are connected to other individuals through interaction context nodes. 
 
-### Problem Setup {.tohide}
+### Problem Setup/Motivation {.tohide}
 
-- We have a multi-layered bipartite network, where each layer is defined by the class of interaction contexts.
+- The formation of this method was done to do simulation of government policies to control COVID-19 in New Zealand over 2020-2022.
+- That model worked with a large, multi-layered, bipartite network that was derived from multiple sources of government-level data.
+- Different data sources informed different layers of the bipartite network, that represent different contexts of infection
 - This bipartite network is large, with over X million nodes, and created with [data sources]
 - We wanted to construct relatively complex agent-like logic, without explicitly looping over each agent, especially when they are not important to the infectious disease process.
 
+
+- Here we will present on a simple model with some important mechanisms included.
+
 ## Method
+
+### Aspects to highlight
 
 ### Motivation for grouping and structuring a reaction tree {.tohide}
 
@@ -40,6 +55,8 @@ When the reactions are enumerated, many reactions are
 To build in more complex interactions, 
 
 ### Algorithm and principles
+
+<!--this is placeholder until I put an actual algorithm in, I just need to make sure algorithms render-->
 
 ```pseudocode
 #| label: alg-quicksort
