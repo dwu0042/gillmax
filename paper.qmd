@@ -11,6 +11,8 @@ authors:
     affiliation: Department of Engineering Science, University of Auckland
 draft: true
 bibliography: references.bib
+notebook-links: false
+date: last-modified
 ---
 
 ## Introduction
@@ -58,6 +60,8 @@ To build in more complex interactions,
 
 <!--this is placeholder until I put an actual algorithm in, I just need to make sure algorithms render-->
 
+We write an algorithm in pseudocode in @alg-quicksort.
+
 ```pseudocode
 #| label: alg-quicksort
 #| html-indent-size: "1.2em"
@@ -81,7 +85,7 @@ To build in more complex interactions,
 \Procedure{Partition}{$A, p, r$}
   \State $x = A[r]$
   \State $i = p - 1$
-  \For{$j = p, \dots, r - 1$}
+  \For{$j = p$ \textbf{to} $r - 1$}
     \If{$A[j] < x$}
       \State $i = i + 1$
       \State exchange
@@ -94,11 +98,21 @@ To build in more complex interactions,
 \end{algorithm}
 ```
 
-
 ## Results
 
 Here, we show 
 
+```{python}
+#| echo: false
+
+from networkcontagion.lib import simulation
+```
+
+```{python plot}
+from matplotlib import pyplot as plt
+
+plt.plot([1, 2, 4], [3, 6, 5])
+```
 
 ## Discussion
 
