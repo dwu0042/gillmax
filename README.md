@@ -7,4 +7,4 @@ To build:
 
 Prereqs:
 
-- a LaTeX installationhttps://quarto.org/docs/get-started/
+- a LaTeX installation (with pdflatex)
