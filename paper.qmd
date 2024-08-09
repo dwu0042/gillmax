@@ -1,5 +1,5 @@
 ---
-title: Efficient non-Markovian epidemic simulation on large bipartite networks
+title: Non-Markovian epidemic simulation on bipartite networks
 authors:
   - name: David Wu
     affiliation: Department of Econometrics and Business Statistics, Monash University
@@ -14,6 +14,10 @@ bibliography: references.bib
 notebook-links: false
 date: last-modified
 ---
+
+## Meta Notes
+
+- should write a separate version of the library code
 
 ## Introduction
 
@@ -32,6 +36,8 @@ date: last-modified
 - However, the individual interaction can be important in periods where the assumptions of the approximations cannot hold.
 - To structure the interactions between individuals, there are many approaches [missing info], but a standard model is to use a network, or graph, to define the possible interactions between individuals.
 - To realistically represent modes of interaction in a memory-efficient manner, we choose to use bipartite networks, where, as usual, individuals are represented as nodes, in one of the disjoint sets; and the contexts of interaction are now also explicitly nodes, and are the other disjoint set; i.e. individuals are connected to other individuals through interaction context nodes. 
+
+- Kit Yates paper on what cant be done with gillespie
 
 ### Problem Setup/Motivation {.tohide}
 
@@ -57,8 +63,6 @@ When the reactions are enumerated, many reactions are
 To build in more complex interactions, 
 
 ### Algorithm and principles
-
-<!--this is placeholder until I put an actual algorithm in, I just need to make sure algorithms render-->
 
 We write an algorithm in pseudocode in @alg-gillespiemax.
 

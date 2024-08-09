@@ -21,8 +21,9 @@ _all_states = OrderedDict((
 
 _parameters = OrderedDict((
     ('beta', 'transmissivity parameter'),
+    # introduce transmission parameter by context type
     ('sigma_demographic', 'susceptibility by demographic'),
-    ('sigma_group', 'susceptibility by context'),
+    # ('sigma_group', 'susceptibility by context'),
     ('incubation_scale', 'scale parameter for incubation period (gamma-dist)'),
     ('incubation_shape', 'shape parameter for incubation period (gamma-dist)'),
     ('alpha_recover', 'rate of recovery (non-death)'),
@@ -82,7 +83,7 @@ def transition_choice(G, node, t, status, node_rate, parameters, sim_objects):
     roll = random.random() * node_rate
     if state == 'E':
         if roll < sim_objects['gamma_hazard'](t - sim_objects['entry_time'][node]):
-            return Event.infect, 'I'
+            return Event.spontaneous, 'I'
         else:
             return NoEvent.no_event, 
     if state == 'I':
@@ -108,7 +109,27 @@ def transition_choice(G, node, t, status, node_rate, parameters, sim_objects):
     return NoEvent.no_event, 
 
 def manage_event(G, t, event_type, event_info, status, event_queue, parameters, sim_objects):
-    pass
+    
+    actualised_events = []
+    influence_set = []
+
+    if event_type is Event.spontaneous:
+        node, new_status = event_info
+        old_status = status[node]
+        status[node] = new_status
+        actualised_events.append({
+            't': t,
+            'enode': node,
+            'efrom': old_status,
+            'eto': new_status
+        })
+        influence_set.append(node)
+        sim_objects['entry_time'][node] = t
+    elif event_type is Event.infect:
+        node, = event_info
+
+
+        #TODO
 
 
 
