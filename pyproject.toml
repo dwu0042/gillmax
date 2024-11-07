@@ -17,3 +17,7 @@ dependencies = [
 
 [project.urls]
 Home = "https://github.com/dwu0042/gillmax"
+
+[tool.flit.sdist]
+include = ["gillespymax/", "vignette/"]
+exclude = ["_extensions/", "_quarto.yml", "paper.qmd", "references.bib"]
