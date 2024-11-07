@@ -17,6 +17,7 @@ from .ratedict import ListDict
 from typing import Mapping, Iterable, Hashable, Any, SupportsFloat, Tuple
 from os import PathLike
 
+
 class GillespieMaxSim(ABC):
 
     def __init__(
@@ -31,12 +32,12 @@ class GillespieMaxSim(ABC):
         self.G = graph
 
         self.t = initial_time
-        self.parameters = parameters
+        self.parameters = dict() if parameters is None else parameters
 
         self.status = {node: initial_state[node] for node in self.G.nodes()}
 
         self.records = ContagionRecords(return_statuses)
-        self.records.set_initial_condition(self.status)
+        self.records.set_initial_condition(self.t, self.status)
 
         self.sim_objects = dict()
         self.event_queue = SortedList()
@@ -52,7 +53,9 @@ class GillespieMaxSim(ABC):
         pass
 
     @abstractmethod
-    def manage_event(self, event_type: BaseEvent, event_info: Iterable) -> Tuple[Iterable, Iterable]:
+    def manage_event(
+        self, event_type: BaseEvent, event_info: Iterable
+    ) -> Tuple[Iterable, Iterable]:
         pass
 
     def record(self, events: Iterable[Mapping[str, Any]]):
@@ -65,16 +68,20 @@ class GillespieMaxSim(ABC):
             self.rates.insert(nd, weight=weight, cast=float)
 
     def run(self, until=100):
-        
+
         while self.rates.is_active() or len(self.event_queue):
 
             # handle event queue
             candidate_delay = self.rates.next_time()
             # extract queued events until none happen before the candidate time to next event
-            while len(self.event_queue) > 0 and self.event_queue[0][0] < (self.t + candidate_delay):
+            while len(self.event_queue) > 0 and self.event_queue[0][0] < (
+                self.t + candidate_delay
+            ):
                 t_cand, event_type, *event_info = self.event_queue.pop(0)
                 if t_cand < self.t:
-                    warn(f"Event Queue produced event in the past ({t_cand}) < ({self.t}, ignoring...")
+                    warn(
+                        f"Event Queue produced event in the past ({t_cand}) < ({self.t}, ignoring..."
+                    )
                     continue
                 self.t = t_cand
                 if self.t > until:
@@ -83,7 +90,7 @@ class GillespieMaxSim(ABC):
                 self.record(events)
                 self.update_influence_set(influence_set)
                 candidate_delay = self.rates.next_time()
-            
+
             t += candidate_delay
 
             if t >= until:

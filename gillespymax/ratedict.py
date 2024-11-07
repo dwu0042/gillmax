@@ -27,6 +27,9 @@ class ListDict(object):
     def __contains__(self, item):
         return item in self.itemmap and self.itemmap[item] != 0
 
+    def __getitem__(self, key):
+        return self.itemmap[key]
+
     def is_active(self):
         r"""
         Returns whether or not there are any more non-negative weights left
@@ -89,4 +92,4 @@ class ListDict(object):
         if self.total_weight > 0:
             return random.expovariate(self.total_weight)
         else:
-            return float('Inf')
+            return float("Inf")

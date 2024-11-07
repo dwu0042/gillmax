@@ -12,7 +12,8 @@ dynamic = ["version", "description"]
 dependencies = [
     "networkx",
     "sortedcontainers",
-    "h5py"
+    "h5py",
+    "PyYAML",
 ]
 
 [project.urls]

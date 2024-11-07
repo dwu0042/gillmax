@@ -1,0 +1,21 @@
+
+
+parameters:
+  beta: 1.0
+  prop_time_at_home: 0.6
+  sigma_demographic:
+    - 0.3
+    - 0.6
+    - 1.0
+    - 0.8
+  incubation_scale: 0.25
+  incubation_shape: 8
+  alpha_recover: 0.14
+  alpha_mort: 0.33
+  prob_death: 0.1
+  p_test_0: 0.1
+  kappa: 1
+
+seeding:
+  num: 5
+
