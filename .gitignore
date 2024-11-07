@@ -1,5 +1,6 @@
 _manuscript
 /.quarto/
+/paper_files/
 /site_libs/
 /dist/
 **__pycache__/

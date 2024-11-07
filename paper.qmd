@@ -13,13 +13,24 @@ draft: true
 bibliography: references.bib
 notebook-links: false
 date: last-modified
+execute:
+  echo: false
 ---
 
 ## Meta Notes
 
-- should write a separate version of the library code
+- ~~should write a separate version of the library code~~ This is now done: gillespymax
 
 ## Introduction
+
+The simulation of stochastic process models is a computationally challenging task. However, these stochastic process models are often the most approachable method of defining behaviours of complex systems. This is particularly the case in modelling infectious diseases, as mean-field approximations tend to break down in real-world scenarios.
+
+One framework that can be employed to reduce the computational burden of simulating complex systems is the continuous time Markov chain (CTMC). This is where the timing discrete jumps from one state to another are modelled as arising from a Poisson process. To simulate these types of models computationally, variants of the Gillespie method [@gillespie_exact_1977] are used. This can exactly simulate the dynamics that arise from this class of models.
+
+The usage of CTMCs imposes a memorylessness constraint on the model, and can often incorrectly capture the temporal dynamics. 
+
+
+
 
 ### Notes from initial meeting {.tohide}
 
@@ -118,6 +129,7 @@ We write an algorithm in pseudocode in @alg-gillespiemax.
     \EndProcedure
   \end{algorithmic}
   \end{spacing}
+  \vspace {0.15ex}
 \end{algorithm}
 ```
 
