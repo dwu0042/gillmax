@@ -1,4 +1,19 @@
-Source files for a paper on Gillespie Max, and its motivation and applications to epidemic simulation on (bipartite) networks
+# Gillespymax
+
+Reduced library and source files for a paper on Gillespie Max
+
+
+## Installation
+
+with pip, from source
+
+```
+pip install .
+```
+
+## Paper
+
+Algorithm, its motivation and applications to epidemic simulation on (bipartite) networks
 
 To build the paper:
 
