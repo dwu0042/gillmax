@@ -165,15 +165,26 @@ Das ist caption.
 ```{python}
 #| echo: false
 
-from gillespymax import GillespieMaxSim
+import gillespymax
+import altair as alt
 
-```
+alt.renderers.enable('svg')
 
-```{python plot}
-#| label: fig-one
-from matplotlib import pyplot as plt
+records = gillespymax.history.read_records("vignette/sample_results.h5")
+df = next(iter(records.values()))
 
-plt.plot([1, 2, 4], [3, 6, 5])
+# need to pivot longer to get into a plottable format
+df_long = df.select(list('tSEIRDTQ')).unpivot(
+  index='t',
+  variable_name='state',
+  value_name='count'
+)
+
+chart = df_long.plot.line(x='t', y='count', color='state')
+chart.encoding.x.title = 'Time'
+chart.encoding.y.title = 'Count'
+
+chart.show()
 ```
 
 ## Discussion

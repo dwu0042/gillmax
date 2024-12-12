@@ -23,3 +23,4 @@ To build the paper:
 Prereqs:
 
 - a LaTeX installation (with pdflatex)
+- rsvg-convert (see here)[https://quarto.org/docs/prerelease/1.3/pdf.html]
