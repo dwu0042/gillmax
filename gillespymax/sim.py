@@ -29,12 +29,12 @@ class GillespieMaxSim(ABC):
         return_statuses: Iterable | None = None,
     ):
 
-        self.G = graph
+        self.graph = graph
 
         self.t = initial_time
         self.parameters = dict() if parameters is None else parameters
 
-        self.status = {node: initial_state[node] for node in self.G.nodes()}
+        self.status = {node: initial_state[node] for node in self.graph.nodes()}
 
         self.records = ContagionRecords(return_statuses)
         self.records.set_initial_condition(self.t, self.status)
