@@ -2,6 +2,8 @@ from collections import Counter
 import h5py
 import datetime
 import secrets
+import polars as pl
+from os import PathLike
 
 
 class ContagionRecords:
@@ -93,21 +95,21 @@ class ContagionRecords:
         post_state = ",".join(filter(None, [eto, astatus]))
         txncode = f"({pre_state}) -> ({post_state})"
 
-        self.t.append(t)
-        self.enode.append(enode)
-        self.anode.append(anode)
-        self.group.append(group)
-        self.efrom.append(efrom)
-        self.eto.append(eto)
-        self.astatus.append(astatus)
-        self.txncode.append(txncode)
+        self.t.append(float(t))
+        self.enode.append(str(enode))
+        self.anode.append(str(anode))
+        self.group.append(str(group))
+        self.efrom.append(str(efrom))
+        self.eto.append(str(eto))
+        self.astatus.append(str(astatus))
+        self.txncode.append(txncode)  # already a str
         for state_record in self.states.values():
             state_record.append(state_record[-1])
         self.states.get(efrom, [0])[-1] -= 1
         self.states.get(eto, [0])[-1] += 1
 
-    def write(self, filename, sim_id=None, mode="a", **attrs):
-        """Output the record table to npz format
+    def write(self, filename: PathLike, sim_id=None, mode="a", **attrs):
+        """Output the record table to hdf5 format
 
         Args:
             filename (str): Path to file to output record table into
@@ -137,3 +139,38 @@ class ContagionRecords:
                 grp.create_dataset(state, data=record)
 
         return sim_id
+
+    def to_dataframe(self):
+
+        return pl.from_dict(
+            {
+                **{
+                    k: self.__getattribute__(k)
+                    for k in (
+                        "t",
+                        "enode",
+                        "anode",
+                        "group",
+                        "efrom",
+                        "eto",
+                        "astatus",
+                        "txncode",
+                    )
+                },
+                **self.states,
+            }
+        )
+
+
+def read_records(filename: PathLike):
+
+    dataframes = dict()
+    with h5py.File(filename, "r") as fp:
+        for group in fp:
+            records = {
+                k: (list(v.asstr()) if h5py.check_string_dtype(v.dtype) else v[:])
+                for k, v in fp[group].items()
+            }
+            dataframes[group] = pl.from_dict(records)
+
+    return dataframes

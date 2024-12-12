@@ -5,14 +5,14 @@ Users should implement a subclass of GIllespieMaxSim
 
 import random
 from warnings import warn
-from abc import ABC, abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
 
 import networkx as nx
 from sortedcontainers import SortedList
 
 from .history import ContagionRecords
 from .events import BaseEvent, NoEvent
-from .ratedict import ListDict
+from .ratedict import RateDict
 
 from typing import Mapping, Iterable, Hashable, Any, SupportsFloat, Tuple
 from os import PathLike
@@ -42,7 +42,7 @@ class GillespieMaxSim(ABC):
         self.sim_objects = dict()
         self.event_queue = SortedList()
 
-        self.rates = ListDict()
+        self.rates = RateDict()
 
     @abstractmethod
     def maximum_rate(self, node: Hashable) -> SupportsFloat:
@@ -66,6 +66,10 @@ class GillespieMaxSim(ABC):
         for nd in influence_set:
             weight = self.maximum_rate(nd)
             self.rates.insert(nd, weight=weight, cast=float)
+
+    def compute_initial_rates(self):
+        for node in self.graph:
+            self.rates.insert(node, weight=self.maximum_rate(node))
 
     def run(self, until=100):
 
@@ -91,9 +95,9 @@ class GillespieMaxSim(ABC):
                 self.update_influence_set(influence_set)
                 candidate_delay = self.rates.next_time()
 
-            t += candidate_delay
+            self.t += candidate_delay
 
-            if t >= until:
+            if self.t >= until:
                 break
 
             # Determine the type of event occuring

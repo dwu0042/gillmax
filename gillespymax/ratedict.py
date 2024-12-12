@@ -7,7 +7,7 @@ from collections import defaultdict
 import random
 
 
-class ListDict(object):
+class RateDict(object):
     """
     Adapted from EoN simulation _ListDict_
     Uses a cdf sampling on the weights, then a uniform draw over the nodes
@@ -20,6 +20,9 @@ class ListDict(object):
         self.itemmap = dict()
         self.pdf = defaultdict(int)
         self.total_weight = 0.0
+
+    def __str__(self):
+        return f"RateDict[items = {len(self)}, total_weight = {self.total_weight}]"
 
     def __len__(self):
         return sum(int(v / k) for k, v in self.pdf.items())

@@ -14,7 +14,8 @@ parameters:
   alpha_mort: 0.33
   prob_death: 0.1
   p_test_0: 0.1
-  kappa: 1
+  kappa: 0.5
+  test_return: [1, 2]
 
 seeding:
   num: 5
