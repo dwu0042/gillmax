@@ -17,6 +17,10 @@ execute:
   echo: false
 ---
 
+```{python}
+from importlib import reload
+```
+
 ## Meta Notes
 
 - ~~should write a separate version of the library code~~ This is now done: gillespymax
@@ -164,27 +168,21 @@ Das ist caption.
 
 ```{python}
 #| echo: false
+#| label: fig-one
+#| fig-cap: An example realisation
 
-import gillespymax
-import altair as alt
+from gillespymax import analysis
+reload(analysis)
+import hvplot.polars
 
-alt.renderers.enable('svg')
+hvplot.extension('matplotlib')
 
-records = gillespymax.history.read_records("vignette/sample_results.h5")
+records = analysis.read_records("vignette/sample_results.h5")
 df = next(iter(records.values()))
 
-# need to pivot longer to get into a plottable format
-df_long = df.select(list('tSEIRDTQ')).unpivot(
-  index='t',
-  variable_name='state',
-  value_name='count'
-)
+chart = analysis.plot_history(df)
 
-chart = df_long.plot.line(x='t', y='count', color='state')
-chart.encoding.x.title = 'Time'
-chart.encoding.y.title = 'Count'
-
-chart.show()
+hvplot.render(chart, backend='matplotlib')
 ```
 
 ## Discussion

@@ -17,7 +17,7 @@ dependencies = [
     "numpy",
     "scipy",
     "polars",
-    "vl-convert-python",
+    "hvplot",
 ]
 
 [project.urls]
