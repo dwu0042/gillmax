@@ -180,7 +180,7 @@ hvplot.extension('matplotlib')
 records = analysis.read_records("vignette/sample_results.h5")
 df = next(iter(records.values()))
 
-chart = analysis.plot_history(df)
+chart = analysis.plot_history(df, 'SEIRDTQ')
 
 hvplot.render(chart, backend='matplotlib')
 ```
