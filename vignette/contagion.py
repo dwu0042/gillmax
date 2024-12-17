@@ -6,8 +6,7 @@ from warnings import warn
 import networkx as nx
 from scipy.special import gammaincc as upper_incomplete_gamma
 
-from gillespymax import GillespieMaxSim, BaseEvent, NoEvent, config_loader
-
+from gillespymax import GillespieMaxSim, BaseEvent, NoEvent 
 from typing import Mapping, Iterable, Hashable, Any, SupportsFloat, Tuple
 from os import PathLike
 
@@ -94,20 +93,6 @@ class SimpleContagionSim(GillespieMaxSim):
         self.sim_objects["entry_time"] = defaultdict(float)
 
         self.compute_initial_rates()
-
-    @classmethod
-    def checked_config_load(cls, config_file: PathLike):
-        config = config_loader.load(config_file)
-
-        missing_parameters = []
-        for parameter in cls._parameters:
-            if parameter not in config["parameters"]:
-                missing_parameters.append(parameter)
-
-        if len(missing_parameters) > 0:
-            raise ValueError(f"Missing parameters in config file: {missing_parameters}")
-
-        return config
 
     @staticmethod
     def create_initial_state(

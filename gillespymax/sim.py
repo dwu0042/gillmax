@@ -10,6 +10,7 @@ from abc import ABC, ABCMeta, abstractmethod
 import networkx as nx
 from sortedcontainers import SortedList
 
+from . import config_loader
 from .history import ContagionRecords
 from .events import BaseEvent, NoEvent
 from .ratedict import RateDict
@@ -19,6 +20,10 @@ from os import PathLike
 
 
 class GillespieMaxSim(ABC):
+
+    _states = dict()
+    _parameters = dict()
+    _sim_objects = dict()
 
     def __init__(
         self,
@@ -57,6 +62,24 @@ class GillespieMaxSim(ABC):
         self, event_type: BaseEvent, event_info: Iterable
     ) -> Tuple[Iterable, Iterable]:
         pass
+
+    @classmethod
+    def checked_config_load(cls, config_file: PathLike):
+        config = config_loader.load(config_file)
+
+        missing_parameters = []
+        for parameter in cls._parameters:
+            if parameter not in config["parameters"]:
+                missing_parameters.append(parameter)
+
+        if len(missing_parameters) > 0:
+            raise ValueError(f"Missing parameters in config file: {missing_parameters}")
+
+        return config
+    
+    @property
+    def default_return_states(self):
+        return list(self._states.keys())
 
     def record(self, events: Iterable[Mapping[str, Any]]):
         for event in events:
