@@ -16,19 +16,27 @@ def read_records(filename: PathLike):
 
     return dataframes
 
-def plot_history(dataframe: pl.DataFrame, states_to_plot: Iterable):
-
+def df_longer(dataframe: pl.DataFrame, states_to_plot: Iterable):
     return (
         dataframe
-        .select('t', list(states_to_plot))
+        .select('t', *list(states_to_plot))
         .unpivot(
             index='t',
             variable_name='state',
             value_name='count',
         )
+    )
+
+def _plot_hist(df_long: pl.DataFrame):
+    return (
+        df_long
         .hvplot.step(
             x='t',
             y='count',
-            by='state'
+            by='state',
         )
     )
+
+def plot_history(dataframe: pl.DataFrame, states_to_plot: Iterable):
+
+    return _plot_hist(df_longer(dataframe, states_to_plot))
