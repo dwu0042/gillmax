@@ -69,7 +69,7 @@ This insight is not necessarily novel: it is explained and carefully treated in 
 - To structure the interactions between individuals, there are many approaches [missing info], but a standard model is to use a network, or graph, to define the possible interactions between individuals.
 - To realistically represent modes of interaction in a memory-efficient manner, we choose to use bipartite networks, where, as usual, individuals are represented as nodes, in one of the disjoint sets; and the contexts of interaction are now also explicitly nodes, and are the other disjoint set; i.e. individuals are connected to other individuals through interaction context nodes. 
 
-- Kit Yates paper on what cant be done with gillespie (**)
+- Kit Yates paper on what cant be done with gillespie (**) [@yates_multi-stage_2017]
 
 ### Problem Setup/Motivation {.tohide}
 
@@ -186,6 +186,11 @@ Event handling logic
 ## Results
 
 Here, we show 
+
+- Implement a small toy model
+- Show the simplified model
+- Point to the reports as an exmple of a larger set of complex models
+
 
 We diagram in @fig-one
 
