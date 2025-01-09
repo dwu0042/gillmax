@@ -33,8 +33,23 @@ One framework that can be employed to reduce the computational burden of simulat
 
 The usage of CTMCs imposes a memorylessness constraint on the model, and can often incorrectly capture the temporal dynamics. 
 
+## Methods
 
+The problem occurs when a non-Markovian process is introduced, that is, a process that does not have an exponential waiting time between events.
+There are two broad approaches to dealing with this problem:
 
+1. Queue events using a next-reaction style method
+2. Simulate events as if they were Markovian and correct the realisation by rejecting (thinning)
+
+These two approaches have different computational and memory tradeoffs. With a next-reaction style method, where you pre-compute the firing time of the next event, you retain the runtime efficiency of the direct method (or often improve it); but the method requires more memory to store - since each process now need to retain more information than just a single rate.
+For the rejection method, you retain the same memory efficiency, as you store the maximum rate of firing instead of the exact (Markovian) rate of firing, but you reduce the computational efficiency, as additional random numbers are being drawn for no change in state.
+However, these two methods are complementary in their payoffs and drawbacks -- and thus we found a combined approach was an effective way of modelling these complex reactions.
+
+To integrate a next-reaction style of event firing in the direct method, we can introduce an event queue. Implementation-wise, this is a priority queue, where elements of the queue are ordered by their time of firing.
+When drawing the time to fire in the direct method step, we additionally check if the next queued event would fire before the proposed time-to-fire from the direct method. If the queued event would fire first, then we resolve that event, before repeating the check; if there are no queued events that would fire first, then we proceed with the direct method. This is noted in @unknown as a yet-to-be-published "first-family method".
+
+To integrate thinning-based event firing, we simulate the direct method as usual, but before resolving the event, we determine whether the event is a real event or a null event. For a reaction with a hazard function $\lambda(t)$ which is bounded above by a constant $\hat{\lambda}$ over a time interval $[t_0, t_1]$, the probability of the event being real at any point in that time interval is $\lambda(t) / \hat\lambda$. 
+This insight is not necessarily novel: it is explained and carefully treated in @grosmann_efficient_2020.
 
 ### Notes from initial meeting {.tohide}
 
@@ -182,7 +197,7 @@ df = next(iter(records.values()))
 
 chart = analysis.plot_history(df, 'SEIRDTQ')
 
-hvplot.render(chart, backend='matplotlib')
+hvplot.render(chart)
 ```
 
 ## Discussion
