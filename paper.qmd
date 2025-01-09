@@ -19,6 +19,8 @@ execute:
 
 ```{python}
 from importlib import reload
+from IPython.utils.io import capture_output
+as_silent = capture_output
 ```
 
 ## Meta Notes
@@ -67,7 +69,7 @@ This insight is not necessarily novel: it is explained and carefully treated in 
 - To structure the interactions between individuals, there are many approaches [missing info], but a standard model is to use a network, or graph, to define the possible interactions between individuals.
 - To realistically represent modes of interaction in a memory-efficient manner, we choose to use bipartite networks, where, as usual, individuals are represented as nodes, in one of the disjoint sets; and the contexts of interaction are now also explicitly nodes, and are the other disjoint set; i.e. individuals are connected to other individuals through interaction context nodes. 
 
-- Kit Yates paper on what cant be done with gillespie
+- Kit Yates paper on what cant be done with gillespie (**)
 
 ### Problem Setup/Motivation {.tohide}
 
@@ -84,13 +86,23 @@ This insight is not necessarily novel: it is explained and carefully treated in 
 
 ### Aspects to highlight
 
+As the complexity and size of the system increases, we find that there are a few operations that become expensive if naively dealt with.
+These are:
+- the sampling of the class of reaction to fire next, and
+- the resolution of the event (change in state and subsequent update to the reaction firing rates)
+
+
 ### Motivation for grouping and structuring a reaction tree {.tohide}
 
 When the reactions are enumerated, many reactions are 
 
 ### Non-Markovian Extensions
 
-To build in more complex interactions, 
+To build in more complex interactions, we drop the Markovian assumption used in the construction of the direct method.
+Existing methods, such as the next-reaction method, can already do this, since they use a priority queue 
+
+
+
 
 ### Algorithm and principles
 
@@ -101,7 +113,7 @@ We write an algorithm in pseudocode in @alg-gillespiemax.
 
 \begin{algorithm}
   \caption{Gillespie Max}
-  \begin{spacing}{0.85}
+  \begin{spacing}{1.0}
   \begin{algorithmic}
     \Procedure{Gillespie Max}{$\mathcal{I}, V, x_0, \hat{\lambda}, \lambda$}
       \State Initialise time $t \gets 0$
@@ -146,11 +158,30 @@ We write an algorithm in pseudocode in @alg-gillespiemax.
         \EndIf
       \EndWhile
     \EndProcedure
+  \vspace {0.15ex}
   \end{algorithmic}
   \end{spacing}
-  \vspace {0.15ex}
 \end{algorithm}
 ```
+Main Simulation Logic
+1. Initialise the time, state, event queue, and history
+2. For each reaction, compute the maximum rate, and store
+3. LABEL: Main loop
+4. Draw proposed time to next event based on sum of maximum rates of reactions
+6. Check if the first queued event will fire before the proposed time to next event
+7. If true, pop and handle the first queued event, and return to step 4; otherwise, proceed
+8. Advance time by the proposed time to next event
+9. Draw the type of reaction to fire
+10. Check the acceptance function of the proposed reaction to fire
+11. If accepted, handle the event.
+12. Return to step 3.
+
+Event handling logic
+1. Update the state based on the reaction
+2. Push the record of the state into history
+3. Check if the reaction generates any queued events, and insert them into the event queue
+4. Determine the reactions that have rates affected by the reaction that fired
+5. For each of those reactions, recompute their maximum rates, and update in the store.
 
 ## Results
 
@@ -188,16 +219,20 @@ Das ist caption.
 
 from gillespymax import analysis
 reload(analysis)
-import hvplot.polars
 
-hvplot.extension('matplotlib')
+# here we suppress output
+with as_silent():
+  import hvplot.polars
+  hvplot.extension('matplotlib')
 
 records = analysis.read_records("vignette/sample_results.h5")
 df = next(iter(records.values()))
 
 chart = analysis.plot_history(df, 'SEIRDTQ')
 
-hvplot.render(chart)
+rendered = hvplot.render(chart, backend="matplotlib")
+
+rendered
 ```
 
 ## Discussion
