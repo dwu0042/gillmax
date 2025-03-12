@@ -28,15 +28,17 @@ def df_longer(dataframe: pl.DataFrame, states_to_plot: Iterable):
         )
     )
 
-def _plot_hist(df_long: pl.DataFrame):
+def _plot_hist(df_long: pl.DataFrame, ax=None, **kwargs):
     return sns.lineplot(
         df_long,
         x='t',
         y='count',
         hue='state',
         drawstyle='steps',
+        ax=ax,
+        **kwargs
     )
 
-def plot_history(dataframe: pl.DataFrame, states_to_plot: Iterable):
+def plot_history(dataframe: pl.DataFrame, states_to_plot: Iterable, ax=None, **kwargs):
 
-    return _plot_hist(df_longer(dataframe, states_to_plot))
+    return _plot_hist(df_longer(dataframe, states_to_plot), ax=ax, **kwargs)

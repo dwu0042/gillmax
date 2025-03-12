@@ -225,19 +225,10 @@ Das ist caption.
 from gillespymax import analysis
 reload(analysis)
 
-# here we suppress output
-with as_silent():
-  import hvplot.polars
-  hvplot.extension('matplotlib')
-
 records = analysis.read_records("vignette/sample_results.h5")
 df = next(iter(records.values()))
 
-chart = analysis.plot_history(df, 'SEIRDTQ')
-
-rendered = hvplot.render(chart, backend="matplotlib")
-
-rendered
+ax = analysis.plot_history(df, 'SEIRDTQ')
 ```
 
 ## Discussion
