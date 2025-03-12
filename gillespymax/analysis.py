@@ -1,5 +1,6 @@
 import h5py
 import polars as pl
+import seaborn as sns
 from os import PathLike
 from typing import Iterable
 
@@ -28,13 +29,12 @@ def df_longer(dataframe: pl.DataFrame, states_to_plot: Iterable):
     )
 
 def _plot_hist(df_long: pl.DataFrame):
-    return (
-        df_long
-        .hvplot.step(
-            x='t',
-            y='count',
-            by='state',
-        )
+    return sns.lineplot(
+        df_long,
+        x='t',
+        y='count',
+        hue='state',
+        drawstyle='steps',
     )
 
 def plot_history(dataframe: pl.DataFrame, states_to_plot: Iterable):
