@@ -33,7 +33,7 @@ The simulation of stochastic process models is a computationally challenging tas
 
 One framework that can be employed to reduce the computational burden of simulating complex systems is the continuous time Markov chain (CTMC). This is where the timing discrete jumps from one state to another are modelled as arising from a Poisson process. To simulate these types of models computationally, variants of the Gillespie method [@gillespie_exact_1977] are used. This can exactly simulate the dynamics that arise from this class of models.
 
-The usage of CTMCs imposes a memorylessness constraint on the model, and can often incorrectly capture the temporal dynamics. 
+The usage of CTMCs imposes an assumption of memorylessness on the process -- this assumption may not be appropriate for some scenarios. 
 
 ## Methods
 
