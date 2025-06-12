@@ -19,7 +19,7 @@ from typing import Mapping, Iterable, Hashable, Any, SupportsFloat, Tuple
 from os import PathLike
 
 
-class GillespieMaxSim(ABC):
+class Simulator(ABC):
 
     _states = dict()
     _parameters = dict()
@@ -28,40 +28,27 @@ class GillespieMaxSim(ABC):
     def __init__(
         self,
         graph: nx.Graph,
-        initial_state: Mapping[Hashable, str],
-        initial_time=0,
+        initial_state: Mapping[Hashable, Hashable],
+        initial_time: SupportsFloat = 0,
         parameters: Mapping | None = None,
-        return_statuses: Iterable | None = None,
+        return_statuses: Iterable[Hashable] | None = None,
     ):
-
+        # Define the characteristics of the simulation
         self.graph = graph
-
-        self.t = initial_time
         self.parameters = dict() if parameters is None else parameters
+
+        # Setting up initial conditions and data structures
+        self.t = initial_time
 
         self.status = {node: initial_state[node] for node in self.graph.nodes()}
 
-        self.records = ContagionRecords(return_statuses)
+        self.records = ContagionRecords(return_statuses=return_statuses)
         self.records.set_initial_condition(self.t, self.status)
 
+        # transient data structures
         self.sim_objects = dict()
-        self.event_queue = SortedList()
 
         self.rates = RateDict()
-
-    @abstractmethod
-    def maximum_rate(self, node: Hashable) -> SupportsFloat:
-        return 0
-
-    @abstractmethod
-    def transition_choice(self, node: Hashable) -> Tuple:
-        pass
-
-    @abstractmethod
-    def manage_event(
-        self, event_type: BaseEvent, event_info: Iterable
-    ) -> Tuple[Iterable, Iterable]:
-        pass
 
     @classmethod
     def checked_config_load(cls, config_file: PathLike):
@@ -76,7 +63,7 @@ class GillespieMaxSim(ABC):
             raise ValueError(f"Missing parameters in config file: {missing_parameters}")
 
         return config
-    
+
     @property
     def default_return_states(self):
         return list(self._states.keys())
@@ -84,6 +71,50 @@ class GillespieMaxSim(ABC):
     def record(self, events: Iterable[Mapping[str, Any]]):
         for event in events:
             self.records.add(**event)
+
+    @abstractmethod
+    def compute_initial_rates(self):
+        pass
+
+    def write(self, write_to: str | PathLike):
+        self.records.write(write_to)
+
+
+class GillespieMaxSim(Simulator):
+
+    def __init__(
+        self,
+        graph: nx.Graph,
+        initial_state: Mapping[Hashable, str],
+        initial_time=0,
+        parameters: Mapping | None = None,
+        return_statuses: Iterable | None = None,
+    ):
+        super().__init__(
+            graph=graph,
+            initial_state=initial_state,
+            initial_time=initial_time,
+            parameters=parameters,
+            return_statuses=return_statuses,
+        )
+
+        # transient data structure
+        # for delayed events
+        self.event_queue = SortedList()
+
+    @abstractmethod
+    def maximum_rate(self, node: Hashable) -> SupportsFloat:
+        return 0
+
+    @abstractmethod
+    def transition_choice(self, node: Hashable) -> Tuple:
+        pass
+
+    @abstractmethod
+    def manage_event(
+        self, event_type: BaseEvent, event_info: Iterable
+    ) -> Tuple[Iterable, Iterable]:
+        pass
 
     def update_influence_set(self, influence_set: Iterable[Hashable]):
         for nd in influence_set:
@@ -133,6 +164,3 @@ class GillespieMaxSim(ABC):
                 events, influence_set = self.manage_event(event_type, event_info)
                 self.record(events)
                 self.update_influence_set(influence_set)
-
-    def write(self, write_to: str | PathLike):
-        self.records.write(write_to)
